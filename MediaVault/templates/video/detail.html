@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">视频详情</h4>
+                <div>
+                    {% with video.media_item.share_set.first as share %}
+                    {% if share %}
+                        <a href="{% url 'share:view' share.share_code %}" class="btn btn-sm btn-success me-2" target="_blank">
+                            <i class="bi bi-globe"></i> 已分享
+                        </a>
+                    {% else %}
+                        <a href="{% url 'share:quick' video.media_item.pk %}" class="btn btn-sm btn-success me-2" onclick="return confirm('确定要一键公开分享吗？')">
+                            <i class="bi bi-globe"></i> 一键公开
+                        </a>
+                    {% endif %}
+                    {% endwith %}
+                    <a href="{% url 'video:edit' video.pk %}" class="btn btn-sm btn-outline-secondary me-2">
+                        <i class="bi bi-pencil"></i> 编辑
+                    </a>
+                    <a href="{% url 'share:create' video.media_item.pk %}" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-share"></i> 分享
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <h2 class="mb-4">{{ video.media_item.title }}</h2>
+                
+                {% if video.file %}
+                <div class="mb-4">
+                    <video controls class="w-100 rounded" style="max-height: 400px;">
+                        <source src="{{ video.file.url }}" type="video/mp4">
+                        你的浏览器不支持视频播放。
+                    </video>
+                </div>
+                {% endif %}
+                
+                {% if video.external_url %}
+                <div class="alert alert-info mb-4">
+                    <i class="bi bi-link-45deg"></i> 外部链接：
+                    <a href="{{ video.external_url }}" target="_blank">{{ video.external_url }}</a>
+                </div>
+                {% endif %}
+                
+                {% if video.media_item.description %}
+                <div class="mb-4">
+                    <h6>描述</h6>
+                    <p class="text-muted">{{ video.media_item.description }}</p>
+                </div>
+                {% endif %}
+                
+                <div class="mb-4">
+                    <h6>标签</h6>
+                    {% for tag in video.media_item.tags.all %}
+                    <span class="tag-badge">{{ tag }}</span>
+                    {% empty %}
+                    <span class="text-muted">暂无标签</span>
+                    {% endfor %}
+                </div>
+                
+                <div class="row text-center text-muted small">
+                    <div class="col-6">
+                        <i class="bi bi-eye"></i> {{ video.media_item.view_count }} 次浏览
+                    </div>
+                    <div class="col-6">
+                        <i class="bi bi-calendar"></i> {{ video.media_item.created_at|date:"Y-m-d" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'video:list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> 返回列表
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

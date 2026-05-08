@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3">
+        <div class="sidebar">
+            <h5 class="mb-3">导航</h5>
+            <a href="{% url 'core:dashboard' %}" class="sidebar-link">
+                <i class="bi bi-speedometer2"></i> 仪表盘
+            </a>
+            <a href="{% url 'share:my_shares' %}" class="sidebar-link active">
+                <i class="bi bi-share"></i> 我的分享
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-9">
+        <h2 class="mb-4"><i class="bi bi-share text-primary"></i> 我的分享</h2>
+        
+        {% if shares %}
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>标题</th>
+                                <th>类型</th>
+                                <th>分享码</th>
+                                <th>访问次数</th>
+                                <th>过期时间</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for share in shares %}
+                            <tr>
+                                <td>{{ share.media_item.title }}</td>
+                                <td>
+                                    {% if share.media_item.media_type == 'music' %}
+                                    <span class="badge bg-primary">音乐</span>
+                                    {% elif share.media_item.media_type == 'video' %}
+                                    <span class="badge bg-success">视频</span>
+                                    {% else %}
+                                    <span class="badge bg-info">笔记</span>
+                                    {% endif %}
+                                </td>
+                                <td><code>{{ share.share_code }}</code></td>
+                                <td>{{ share.view_count }}</td>
+                                <td>
+                                    {% if share.expire_at %}
+                                    {{ share.expire_at|date:"Y-m-d H:i" }}
+                                    {% else %}
+                                    <span class="text-muted">永久有效</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ share.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="copyLink('{{ share.share_code }}')">
+                                        <i class="bi bi-copy"></i> 复制
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ share.pk }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <div class="modal fade" id="deleteModal{{ share.pk }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">确认删除</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            确定要删除这个分享链接吗？任何人都将无法再通过此链接访问。
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                            <form method="POST" action="{% url 'share:delete' share.pk %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">删除</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-share display-1 text-muted mb-3"></i>
+                <h4 class="text-muted">还没有分享任何内容</h4>
+                <p class="text-muted">分享你的音乐、视频或笔记给朋友吧！</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyLink(code) {
+    const link = window.location.origin + "{% url 'share:view' 'CODE' %}".replace('CODE', code);
+    navigator.clipboard.writeText(link).then(() => {
+        alert('分享链接已复制到剪贴板！');
+    }).catch(err => {
+        alert('复制失败，请手动复制：\n' + link);
+    });
+}
+</script>
+{% endblock %}

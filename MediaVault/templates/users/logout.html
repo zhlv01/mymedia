@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center py-5">
+        <h2>你已成功退出登录</h2>
+        <p class="text-muted my-4">感谢使用 MediaVault，期待你的再次访问！</p>
+        <div>
+            <a href="{% url 'users:login' %}" class="btn btn-primary me-2">重新登录</a>
+            <a href="{% url 'core:home' %}" class="btn btn-outline-primary">返回首页</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

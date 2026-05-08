@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">创建分享链接</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-4">
+                    <strong>分享内容：</strong> {{ media_item.title }}
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">访问密码（可选）</label>
+                        <input type="text" name="password" class="form-control" placeholder="留空则不需要密码">
+                        <div class="form-text">设置后访问者需要输入密码才能查看内容</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">有效期</label>
+                        <select name="expire_days" class="form-select">
+                            <option value="">永久有效</option>
+                            <option value="1">1 天</option>
+                            <option value="7">7 天</option>
+                            <option value="30">30 天</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ media_item.get_absolute_url }}" class="btn btn-outline-secondary me-md-2">取消</a>
+                        <button type="submit" class="btn btn-primary">创建分享链接</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3">
+        <div class="sidebar">
+            <h5 class="mb-3">导航</h5>
+            <a href="{% url 'core:dashboard' %}" class="sidebar-link">
+                <i class="bi bi-speedometer2"></i> 仪表盘
+            </a>
+            <a href="{% url 'music:list' %}" class="sidebar-link">
+                <i class="bi bi-music-note-beamed"></i> 音乐
+            </a>
+            <a href="{% url 'video:list' %}" class="sidebar-link">
+                <i class="bi bi-play-btn"></i> 视频
+            </a>
+            <a href="{% url 'notes:list' %}" class="sidebar-link">
+                <i class="bi bi-file-text"></i> 笔记
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-9">
+        <h2 class="mb-4"><i class="bi bi-search text-primary"></i> 搜索</h2>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-8">
+                        <input type="text" name="q" class="form-control" placeholder="搜索标题、描述、标签..." value="{{ query }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="type" class="form-select">
+                            <option value="">全部类型</option>
+                            <option value="music" {% if media_type == 'music' %}selected{% endif %}>音乐</option>
+                            <option value="video" {% if media_type == 'video' %}selected{% endif %}>视频</option>
+                            <option value="note" {% if media_type == 'note' %}selected{% endif %}>笔记</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary w-100">搜索</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        {% if query or media_type %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">搜索结果 ({{ items|length }})</h5>
+            </div>
+            <div class="card-body">
+                {% if items %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>类型</th>
+                                <th>标题</th>
+                                <th>浏览</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>
+                                    {% if item.media_type == 'music' %}
+                                    <span class="badge bg-primary"><i class="bi bi-music-note-beamed"></i> 音乐</span>
+                                    {% elif item.media_type == 'video' %}
+                                    <span class="badge bg-success"><i class="bi bi-play-btn"></i> 视频</span>
+                                    {% else %}
+                                    <span class="badge bg-info"><i class="bi bi-file-text"></i> 笔记</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.title }}</td>
+                                <td>{{ item.view_count }}</td>
+                                <td>{{ item.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>
+                                    <a href="{{ item.get_absolute_url }}" class="btn btn-sm btn-outline-primary">查看</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-search display-1 text-muted mb-3"></i>
+                    <p class="text-muted">没有找到匹配的结果</p>
+                    <p>试试其他关键词？</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 text-center py-5">
+        <h1 class="display-4 mb-4">欢迎来到 MediaVault</h1>
+        <p class="lead text-muted mb-5">你的个人音乐、视频、笔记收藏和分享平台。</p>
+        <div>
+            <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg me-3">
+                <i class="bi bi-person-plus"></i> 立即注册
+            </a>
+            <a href="{% url 'users:login' %}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-box-arrow-in-right"></i> 登录账号
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if public_shares %}
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="mb-4"><i class="bi bi-globe"></i> 公开分享</h3>
+    </div>
+    {% for share in public_shares|slice:":6" %}
+    <div class="col-md-4">
+        <a href="{% url 'share:view' share.share_code %}" class="text-decoration-none">
+            <div class="card media-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {% if share.media_item.media_type == 'music' %}
+                        <i class="bi bi-music-note-beamed text-primary"></i>
+                        {% elif share.media_item.media_type == 'video' %}
+                        <i class="bi bi-play-btn text-success"></i>
+                        {% else %}
+                        <i class="bi bi-file-text text-info"></i>
+                        {% endif %}
+                        {{ share.media_item.title }}
+                    </h5>
+                    <p class="card-text text-muted small">{{ share.media_item.description|truncatechars:100 }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="bi bi-eye"></i> {{ share.view_count }} 次浏览
+                            <span class="mx-1">|</span>
+                            <i class="bi bi-person"></i> {{ share.media_item.user.username }}
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="row mt-5 py-5">
+    <div class="col-md-4 text-center">
+        <div class="card h-100">
+            <div class="card-body">
+                <i class="bi bi-music-note-list display-4 text-primary mb-3"></i>
+                <h4>音乐收藏</h4>
+                <p class="text-muted">上传音乐文件或添加外部链接，整理你的音乐库。</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-center">
+        <div class="card h-100">
+            <div class="card-body">
+                <i class="bi bi-film display-4 text-success mb-3"></i>
+                <h4>视频收藏</h4>
+                <p class="text-muted">收藏精彩视频，支持本地上传和外部链接。</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-center">
+        <div class="card h-100">
+            <div class="card-body">
+                <i class="bi bi-journal-text display-4 text-info mb-3"></i>
+                <h4>笔记记录</h4>
+                <p class="text-muted">支持 Markdown 的笔记功能，记录灵感与想法。</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

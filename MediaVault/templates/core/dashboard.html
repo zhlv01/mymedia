@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3">
+        <div class="sidebar">
+            <h5 class="mb-3">导航</h5>
+            <a href="{% url 'core:dashboard' %}" class="sidebar-link active">
+                <i class="bi bi-speedometer2"></i> 仪表盘
+            </a>
+            <a href="{% url 'music:list' %}" class="sidebar-link">
+                <i class="bi bi-music-note-beamed"></i> 音乐
+            </a>
+            <a href="{% url 'video:list' %}" class="sidebar-link">
+                <i class="bi bi-play-btn"></i> 视频
+            </a>
+            <a href="{% url 'notes:list' %}" class="sidebar-link">
+                <i class="bi bi-file-text"></i> 笔记
+            </a>
+            <a href="{% url 'core:category_list' %}" class="sidebar-link">
+                <i class="bi bi-folder"></i> 分类管理
+            </a>
+            <a href="{% url 'share:my_shares' %}" class="sidebar-link">
+                <i class="bi bi-share"></i> 我的分享
+            </a>
+            
+            <hr>
+            
+            <h6 class="mt-4 mb-2">快速添加</h6>
+            <a href="{% url 'music:add' %}" class="sidebar-link">
+                <i class="bi bi-plus-circle"></i> 添加音乐
+            </a>
+            <a href="{% url 'video:add' %}" class="sidebar-link">
+                <i class="bi bi-plus-circle"></i> 添加视频
+            </a>
+            <a href="{% url 'notes:add' %}" class="sidebar-link">
+                <i class="bi bi-plus-circle"></i> 添加笔记
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-9">
+        <h2 class="mb-4">欢迎回来，{{ user.username }}！</h2>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-music-note-beamed display-4 text-primary mb-2"></i>
+                        <h3>{{ music_count }}</h3>
+                        <p class="text-muted">首音乐</p>
+                        <a href="{% url 'music:add' %}" class="btn btn-sm btn-primary">添加</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-play-btn display-4 text-success mb-2"></i>
+                        <h3>{{ video_count }}</h3>
+                        <p class="text-muted">个视频</p>
+                        <a href="{% url 'video:add' %}" class="btn btn-sm btn-success">添加</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-file-text display-4 text-info mb-2"></i>
+                        <h3>{{ note_count }}</h3>
+                        <p class="text-muted">篇笔记</p>
+                        <a href="{% url 'notes:add' %}" class="btn btn-sm btn-info text-white">添加</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">最近添加</h5>
+                <a href="{% url 'core:search' %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-search"></i> 搜索
+                </a>
+            </div>
+            <div class="card-body">
+                {% if recent_items %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>类型</th>
+                                <th>标题</th>
+                                <th>浏览</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in recent_items|slice:":10" %}
+                            <tr>
+                                <td>
+                                    {% if item.media_type == 'music' %}
+                                    <span class="badge bg-primary"><i class="bi bi-music-note-beamed"></i> 音乐</span>
+                                    {% elif item.media_type == 'video' %}
+                                    <span class="badge bg-success"><i class="bi bi-play-btn"></i> 视频</span>
+                                    {% else %}
+                                    <span class="badge bg-info"><i class="bi bi-file-text"></i> 笔记</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.title }}</td>
+                                <td>{{ item.view_count }}</td>
+                                <td>{{ item.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>
+                                    <a href="{{ item.get_absolute_url }}" class="btn btn-sm btn-outline-primary">查看</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                    <p class="text-muted">还没有添加任何内容</p>
+                    <p>从添加你的第一个音乐、视频或笔记开始吧！</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

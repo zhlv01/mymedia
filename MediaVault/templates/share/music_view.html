@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="bi bi-music-note-beamed"></i> 分享的音乐</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    {% if music.media_item.cover_image %}
+                    <img src="{{ music.media_item.cover_image.url }}" class="rounded" style="width: 200px; height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light rounded d-inline-flex align-items-center justify-content-center" style="width: 200px; height: 200px;">
+                        <i class="bi bi-music-note-beamed display-1 text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <h2 class="text-center mb-2">{{ music.media_item.title }}</h2>
+                
+                {% if music.artist or music.album %}
+                <p class="text-center text-muted mb-4">
+                    {% if music.artist %}<i class="bi bi-person"></i> {{ music.artist }}{% endif %}
+                    {% if music.artist and music.album %} <span class="mx-2">|</span> {% endif %}
+                    {% if music.album %}<i class="bi bi-disc"></i> {{ music.album }}{% endif %}
+                </p>
+                {% endif %}
+                
+                {% if music.file %}
+                <div class="mb-4">
+                    <audio controls class="w-100">
+                        <source src="{{ music.file.url }}" type="audio/mpeg">
+                        你的浏览器不支持音频播放。
+                    </audio>
+                </div>
+                {% endif %}
+                
+                {% if music.external_url %}
+                <div class="alert alert-info mb-4">
+                    <i class="bi bi-link-45deg"></i> 外部链接：
+                    <a href="{{ music.external_url }}" target="_blank">{{ music.external_url }}</a>
+                </div>
+                {% endif %}
+                
+                {% if music.media_item.description %}
+                <div class="mb-4">
+                    <h6>描述</h6>
+                    <p class="text-muted">{{ music.media_item.description }}</p>
+                </div>
+                {% endif %}
+                
+                <div class="row text-center text-muted small">
+                    <div class="col-6">
+                        <i class="bi bi-eye"></i> 已浏览 {{ share.view_count }} 次
+                    </div>
+                    <div class="col-6">
+                        <i class="bi bi-clock"></i> 时长 {{ music.get_duration_display }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-house"></i> 返回首页
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

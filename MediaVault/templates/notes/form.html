@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            {{ form.title|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.category|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.description|as_crispy_field }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.cover_image|as_crispy_field }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">内容 <small class="text-muted">(支持 Markdown)</small></label>
+                        <textarea name="content" class="form-control" rows="15" placeholder="在这里输入笔记内容...">{{ form.content.value|default:'' }}</textarea>
+                        <div class="form-text">
+                            支持 Markdown 语法：# 标题、**粗体**、*斜体*、- 列表、`代码` 等
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.tags|as_crispy_field }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.is_public }} <label class="form-check-label">公开分享（任何人都可以通过链接访问）</label>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'notes:list' %}" class="btn btn-outline-secondary me-md-2">取消</a>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="bi bi-file-text"></i> 分享的笔记</h4>
+            </div>
+            <div class="card-body">
+                <h1 class="mb-4">{{ note.media_item.title }}</h1>
+                
+                <hr>
+                
+                <div class="markdown-content">
+                    {{ html_content|safe }}
+                </div>
+                
+                <hr>
+                
+                <div class="row text-center text-muted small">
+                    <div class="col-6">
+                        <i class="bi bi-eye"></i> 已浏览 {{ share.view_count }} 次
+                    </div>
+                    <div class="col-6">
+                        <i class="bi bi-calendar"></i> 创建于 {{ note.media_item.created_at|date:"Y-m-d H:i" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-house"></i> 返回首页
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.markdown-content {
+    line-height: 1.8;
+}
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+.markdown-content pre {
+    background: #f8f9fa;
+    padding: 1em;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+.markdown-content code {
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.markdown-content blockquote {
+    border-left: 4px solid #6c5ce7;
+    padding-left: 1em;
+    margin-left: 0;
+    color: #666;
+}
+</style>
+{% endblock %}
